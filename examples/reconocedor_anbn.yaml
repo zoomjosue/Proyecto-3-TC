@@ -1,0 +1,133 @@
+---
+# Reconoce L = { a^n b^n | n >= 1 }.
+# X marca cada "a" procesada y Y la "b" correspondiente.
+q_states:
+  q_list: [q_start, q_find_b, q_return, q_find_a, q_verify, q_accept]
+  initial: q_start
+  final: q_accept
+
+alphabet: [a, b]
+tape_alphabet: [a, b, X, Y, null]
+
+delta:
+  - params:
+      initial_state: q_start
+      mem_cache_value: null
+      tape_input: a
+      output:
+        final_state: q_find_b
+        mem_cache_value: null
+        tape_output: X
+        tape_displacement: R
+
+  - params:
+      initial_state: q_find_b
+      mem_cache_value: null
+      tape_input: a
+      output:
+        final_state: q_find_b
+        mem_cache_value: null
+        tape_output: a
+        tape_displacement: R
+  - params:
+      initial_state: q_find_b
+      mem_cache_value: null
+      tape_input: Y
+      output:
+        final_state: q_find_b
+        mem_cache_value: null
+        tape_output: Y
+        tape_displacement: R
+  - params:
+      initial_state: q_find_b
+      mem_cache_value: null
+      tape_input: b
+      output:
+        final_state: q_return
+        mem_cache_value: null
+        tape_output: Y
+        tape_displacement: L
+
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: a
+      output:
+        final_state: q_return
+        mem_cache_value: null
+        tape_output: a
+        tape_displacement: L
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: Y
+      output:
+        final_state: q_return
+        mem_cache_value: null
+        tape_output: Y
+        tape_displacement: L
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: X
+      output:
+        final_state: q_find_a
+        mem_cache_value: null
+        tape_output: X
+        tape_displacement: R
+
+  - params:
+      initial_state: q_find_a
+      mem_cache_value: null
+      tape_input: X
+      output:
+        final_state: q_find_a
+        mem_cache_value: null
+        tape_output: X
+        tape_displacement: R
+  - params:
+      initial_state: q_find_a
+      mem_cache_value: null
+      tape_input: a
+      output:
+        final_state: q_find_b
+        mem_cache_value: null
+        tape_output: X
+        tape_displacement: R
+  - params:
+      initial_state: q_find_a
+      mem_cache_value: null
+      tape_input: Y
+      output:
+        final_state: q_verify
+        mem_cache_value: null
+        tape_output: Y
+        tape_displacement: R
+
+  - params:
+      initial_state: q_verify
+      mem_cache_value: null
+      tape_input: Y
+      output:
+        final_state: q_verify
+        mem_cache_value: null
+        tape_output: Y
+        tape_displacement: R
+  - params:
+      initial_state: q_verify
+      mem_cache_value: null
+      tape_input: null
+      output:
+        final_state: q_accept
+        mem_cache_value: null
+        tape_output: null
+        tape_displacement: S
+
+simulation_strings:
+  # Dos aceptadas, longitud >= 5.
+  - aaabbb
+  - aaaabbbb
+  # Dos rechazadas, longitud >= 5.
+  - aabbb
+  - aaabb
+
