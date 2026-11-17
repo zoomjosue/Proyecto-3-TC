@@ -1,0 +1,188 @@
+---
+# Altera w en w#w. Usa la memoria cache para transportar cada bit hasta
+# el extremo derecho. X e Y marcan temporalmente 0 y 1, respectivamente.
+q_states:
+  q_list: [q_seek_end, q_rewind, q_find, q_copy, q_return, q_restore, q_accept]
+  initial: q_seek_end
+  final: q_accept
+
+alphabet: ['0', '1']
+tape_alphabet: ['0', '1', '#', X, Y, null]
+
+delta:
+  - params: &seek_zero
+      initial_state: q_seek_end
+      mem_cache_value: null
+      tape_input: '0'
+      output: {final_state: q_seek_end, mem_cache_value: null, tape_output: '0', tape_displacement: R}
+  - params:
+      initial_state: q_seek_end
+      mem_cache_value: null
+      tape_input: '1'
+      output: {final_state: q_seek_end, mem_cache_value: null, tape_output: '1', tape_displacement: R}
+  - params:
+      initial_state: q_seek_end
+      mem_cache_value: null
+      tape_input: null
+      output: {final_state: q_rewind, mem_cache_value: null, tape_output: '#', tape_displacement: L}
+
+  - params:
+      initial_state: q_rewind
+      mem_cache_value: null
+      tape_input: '0'
+      output: {final_state: q_rewind, mem_cache_value: null, tape_output: '0', tape_displacement: L}
+  - params:
+      initial_state: q_rewind
+      mem_cache_value: null
+      tape_input: '1'
+      output: {final_state: q_rewind, mem_cache_value: null, tape_output: '1', tape_displacement: L}
+  - params:
+      initial_state: q_rewind
+      mem_cache_value: null
+      tape_input: null
+      output: {final_state: q_find, mem_cache_value: null, tape_output: null, tape_displacement: R}
+
+  - params:
+      initial_state: q_find
+      mem_cache_value: null
+      tape_input: X
+      output: {final_state: q_find, mem_cache_value: null, tape_output: X, tape_displacement: R}
+  - params:
+      initial_state: q_find
+      mem_cache_value: null
+      tape_input: Y
+      output: {final_state: q_find, mem_cache_value: null, tape_output: Y, tape_displacement: R}
+  - params:
+      initial_state: q_find
+      mem_cache_value: null
+      tape_input: '0'
+      output: {final_state: q_copy, mem_cache_value: '0', tape_output: X, tape_displacement: R}
+  - params:
+      initial_state: q_find
+      mem_cache_value: null
+      tape_input: '1'
+      output: {final_state: q_copy, mem_cache_value: '1', tape_output: Y, tape_displacement: R}
+  - params:
+      initial_state: q_find
+      mem_cache_value: null
+      tape_input: '#'
+      output: {final_state: q_restore, mem_cache_value: null, tape_output: '#', tape_displacement: L}
+
+  # q_copy con cache=0: cruza originales, separador y copia parcial.
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '0'
+      tape_input: X
+      output: {final_state: q_copy, mem_cache_value: '0', tape_output: X, tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '0'
+      tape_input: Y
+      output: {final_state: q_copy, mem_cache_value: '0', tape_output: Y, tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '0'
+      tape_input: '#'
+      output: {final_state: q_copy, mem_cache_value: '0', tape_output: '#', tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '0'
+      tape_input: '0'
+      output: {final_state: q_copy, mem_cache_value: '0', tape_output: '0', tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '0'
+      tape_input: '1'
+      output: {final_state: q_copy, mem_cache_value: '0', tape_output: '1', tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '0'
+      tape_input: null
+      output: {final_state: q_return, mem_cache_value: null, tape_output: '0', tape_displacement: L}
+
+  # q_copy con cache=1.
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '1'
+      tape_input: X
+      output: {final_state: q_copy, mem_cache_value: '1', tape_output: X, tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '1'
+      tape_input: Y
+      output: {final_state: q_copy, mem_cache_value: '1', tape_output: Y, tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '1'
+      tape_input: '#'
+      output: {final_state: q_copy, mem_cache_value: '1', tape_output: '#', tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '1'
+      tape_input: '0'
+      output: {final_state: q_copy, mem_cache_value: '1', tape_output: '0', tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '1'
+      tape_input: '1'
+      output: {final_state: q_copy, mem_cache_value: '1', tape_output: '1', tape_displacement: R}
+  - params:
+      initial_state: q_copy
+      mem_cache_value: '1'
+      tape_input: null
+      output: {final_state: q_return, mem_cache_value: null, tape_output: '1', tape_displacement: L}
+
+  # Regresa al blanco situado antes del input original.
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: X
+      output: {final_state: q_return, mem_cache_value: null, tape_output: X, tape_displacement: L}
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: Y
+      output: {final_state: q_return, mem_cache_value: null, tape_output: Y, tape_displacement: L}
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: '#'
+      output: {final_state: q_return, mem_cache_value: null, tape_output: '#', tape_displacement: L}
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: '0'
+      output: {final_state: q_return, mem_cache_value: null, tape_output: '0', tape_displacement: L}
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: '1'
+      output: {final_state: q_return, mem_cache_value: null, tape_output: '1', tape_displacement: L}
+  - params:
+      initial_state: q_return
+      mem_cache_value: null
+      tape_input: null
+      output: {final_state: q_find, mem_cache_value: null, tape_output: null, tape_displacement: R}
+
+  # Restaura X/Y a 0/1 y acepta al llegar al extremo izquierdo.
+  - params:
+      initial_state: q_restore
+      mem_cache_value: null
+      tape_input: X
+      output: {final_state: q_restore, mem_cache_value: null, tape_output: '0', tape_displacement: L}
+  - params:
+      initial_state: q_restore
+      mem_cache_value: null
+      tape_input: Y
+      output: {final_state: q_restore, mem_cache_value: null, tape_output: '1', tape_displacement: L}
+  - params:
+      initial_state: q_restore
+      mem_cache_value: null
+      tape_input: null
+      output: {final_state: q_accept, mem_cache_value: null, tape_output: null, tape_displacement: R}
+
+simulation_strings:
+  - '01010'
+  - '11100'
+  - '001011'
+  - '101101'
