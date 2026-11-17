@@ -111,3 +111,6 @@ python -m unittest discover -s tests -v
 - `0`: todas las simulaciones terminaron por aceptación o falta de transición.
 - `2`: error de argumentos o configuración.
 - `3`: al menos una simulación alcanzó el límite de pasos.
+
+## Video
+https://youtu.be/pdeIM_XN8aQ
